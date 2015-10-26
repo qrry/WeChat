@@ -218,14 +218,14 @@ public class WeixinUtil {
 	public static Menu initMenu(){
 		Menu menu = new Menu();
 		ClickButton button11 = new ClickButton();
-		button11.setName("click菜单");
+		button11.setName("主菜单");
 		button11.setType("click");
 		button11.setKey("11");
 		
 		ViewButton button21 = new ViewButton();
-		button21.setName("view菜单");
+		button21.setName("百度一下");
 		button21.setType("view");
-		button21.setUrl("http://www.imooc.com");
+		button21.setUrl("http://www.baidu.com");
 		
 		ClickButton button31 = new ClickButton();
 		button31.setName("扫码事件");
