@@ -39,7 +39,7 @@ import com.noneykd.trans.Symbols;
 import com.noneykd.trans.TransResult;
 
 /**
- * Î¢ĞÅ¹¤¾ßÀà
+ * å¾®ä¿¡å·¥å…·ç±»
  * @author Stephen
  *
  */
@@ -57,7 +57,7 @@ public class WeixinUtil {
 	
 	private static final String DELETE_MENU_URL = "https://api.weixin.qq.com/cgi-bin/menu/delete?access_token=ACCESS_TOKEN";
 	/**
-	 * getÇëÇó
+	 * getè¯·æ±‚
 	 * @param url
 	 * @return
 	 * @throws ParseException
@@ -77,7 +77,7 @@ public class WeixinUtil {
 	}
 	
 	/**
-	 * POSTÇëÇó
+	 * POSTè¯·æ±‚
 	 * @param url
 	 * @param outStr
 	 * @return
@@ -96,7 +96,7 @@ public class WeixinUtil {
 	}
 	
 	/**
-	 * ÎÄ¼şÉÏ´«
+	 * æ–‡ä»¶ä¸Šä¼ 
 	 * @param filePath
 	 * @param accessToken
 	 * @param type
@@ -109,13 +109,13 @@ public class WeixinUtil {
 	public static String upload(String filePath, String accessToken,String type) throws IOException, NoSuchAlgorithmException, NoSuchProviderException, KeyManagementException {
 		File file = new File(filePath);
 		if (!file.exists() || !file.isFile()) {
-			throw new IOException("ÎÄ¼ş²»´æÔÚ");
+			throw new IOException("æ–‡ä»¶ä¸å­˜åœ¨");
 		}
 
 		String url = UPLOAD_URL.replace("ACCESS_TOKEN", accessToken).replace("TYPE",type);
 		
 		URL urlObj = new URL(url);
-		//Á¬½Ó
+		//è¿æ¥
 		HttpURLConnection con = (HttpURLConnection) urlObj.openConnection();
 
 		con.setRequestMethod("POST"); 
@@ -123,11 +123,11 @@ public class WeixinUtil {
 		con.setDoOutput(true);
 		con.setUseCaches(false); 
 
-		//ÉèÖÃÇëÇóÍ·ĞÅÏ¢
+		//è®¾ç½®è¯·æ±‚å¤´ä¿¡æ¯
 		con.setRequestProperty("Connection", "Keep-Alive");
 		con.setRequestProperty("Charset", "UTF-8");
 
-		//ÉèÖÃ±ß½ç
+		//è®¾ç½®è¾¹ç•Œ
 		String BOUNDARY = "----------" + System.currentTimeMillis();
 		con.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + BOUNDARY);
 
@@ -140,13 +140,13 @@ public class WeixinUtil {
 
 		byte[] head = sb.toString().getBytes("utf-8");
 
-		//»ñµÃÊä³öÁ÷
+		//è·å¾—è¾“å‡ºæµ
 		OutputStream out = new DataOutputStream(con.getOutputStream());
-		//Êä³ö±íÍ·
+		//è¾“å‡ºè¡¨å¤´
 		out.write(head);
 
-		//ÎÄ¼şÕıÎÄ²¿·Ö
-		//°ÑÎÄ¼şÒÑÁ÷ÎÄ¼şµÄ·½Ê½ ÍÆÈëµ½urlÖĞ
+		//æ–‡ä»¶æ­£æ–‡éƒ¨åˆ†
+		//æŠŠæ–‡ä»¶å·²æµæ–‡ä»¶çš„æ–¹å¼ æ¨å…¥åˆ°urlä¸­
 		DataInputStream in = new DataInputStream(new FileInputStream(file));
 		int bytes = 0;
 		byte[] bufferOut = new byte[1024];
@@ -155,8 +155,8 @@ public class WeixinUtil {
 		}
 		in.close();
 
-		//½áÎ²²¿·Ö
-		byte[] foot = ("\r\n--" + BOUNDARY + "--\r\n").getBytes("utf-8");//¶¨Òå×îºóÊı¾İ·Ö¸ôÏß
+		//ç»“å°¾éƒ¨åˆ†
+		byte[] foot = ("\r\n--" + BOUNDARY + "--\r\n").getBytes("utf-8");//å®šä¹‰æœ€åæ•°æ®åˆ†éš”çº¿
 
 		out.write(foot);
 
@@ -167,7 +167,7 @@ public class WeixinUtil {
 		BufferedReader reader = null;
 		String result = null;
 		try {
-			//¶¨ÒåBufferedReaderÊäÈëÁ÷À´¶ÁÈ¡URLµÄÏìÓ¦
+			//å®šä¹‰BufferedReaderè¾“å…¥æµæ¥è¯»å–URLçš„å“åº”
 			reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
 			String line = null;
 			while ((line = reader.readLine()) != null) {
@@ -195,7 +195,7 @@ public class WeixinUtil {
 	}
 	
 	/**
-	 * »ñÈ¡accessToken
+	 * è·å–accessToken
 	 * @return
 	 * @throws ParseException
 	 * @throws IOException
@@ -212,33 +212,33 @@ public class WeixinUtil {
 	}
 	
 	/**
-	 * ×é×°²Ëµ¥
+	 * ç»„è£…èœå•
 	 * @return
 	 */
 	public static Menu initMenu(){
 		Menu menu = new Menu();
 		ClickButton button11 = new ClickButton();
-		button11.setName("Ö÷²Ëµ¥");
+		button11.setName("ä¸»èœå•");
 		button11.setType("click");
 		button11.setKey("11");
 		
 		ViewButton button21 = new ViewButton();
-		button21.setName("°Ù¶ÈÒ»ÏÂ");
+		button21.setName("ç™¾åº¦ä¸€ä¸‹");
 		button21.setType("view");
 		button21.setUrl("http://www.baidu.com");
 		
 		ClickButton button31 = new ClickButton();
-		button31.setName("É¨ÂëÊÂ¼ş");
+		button31.setName("æ‰«ç äº‹ä»¶");
 		button31.setType("scancode_push");
 		button31.setKey("31");
 		
 		ClickButton button32 = new ClickButton();
-		button32.setName("µØÀíÎ»ÖÃ");
+		button32.setName("åœ°ç†ä½ç½®");
 		button32.setType("location_select");
 		button32.setKey("32");
 		
 		Button button = new Button();
-		button.setName("²Ëµ¥");
+		button.setName("èœå•");
 		button.setSub_button(new Button[]{button31,button32});
 		
 		menu.setButton(new Button[]{button11,button21,button});
@@ -282,9 +282,9 @@ public class WeixinUtil {
 			TransResult transResult = (TransResult) JSONObject.toBean(jsonObject, TransResult.class);
 			Data data = transResult.getData();
 			Symbols symbols = data.getSymbols()[0];
-			String phzh = symbols.getPh_zh()==null ? "" : "ÖĞÎÄÆ´Òô£º"+symbols.getPh_zh()+"\n";
-			String phen = symbols.getPh_en()==null ? "" : "Ó¢Ê½Ó¢±ê£º"+symbols.getPh_en()+"\n";
-			String pham = symbols.getPh_am()==null ? "" : "ÃÀÊ½Ó¢±ê£º"+symbols.getPh_am()+"\n";
+			String phzh = symbols.getPh_zh()==null ? "" : "ä¸­æ–‡æ‹¼éŸ³ï¼š"+symbols.getPh_zh()+"\n";
+			String phen = symbols.getPh_en()==null ? "" : "è‹±å¼è‹±æ ‡ï¼š"+symbols.getPh_en()+"\n";
+			String pham = symbols.getPh_am()==null ? "" : "ç¾å¼è‹±æ ‡ï¼š"+symbols.getPh_am()+"\n";
 			dst.append(phzh+phen+pham);
 			
 			Parts[] parts = symbols.getParts();

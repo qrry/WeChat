@@ -3,7 +3,7 @@
   <display-name>Weixin</display-name>
   <servlet>
     <servlet-name>weixinServlet</servlet-name>
-    <servlet-class>com.imooc.servlet.WeixinServlet</servlet-class>
+    <servlet-class>com.noneykd.servlet.WeixinServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>weixinServlet</servlet-name>

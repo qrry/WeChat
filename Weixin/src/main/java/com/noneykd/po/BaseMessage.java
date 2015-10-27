@@ -1,17 +1,17 @@
 package com.noneykd.po;
 /**
- * ÏûÏ¢¸¸Àà
+ * æ¶ˆæ¯çˆ¶ç±»
  * @author Stephen
  *
  */
 public class BaseMessage {
-	//½ÓÊÕ·½Î¢ĞÅºÅ
+	//æ¥æ”¶æ–¹å¾®ä¿¡å·
 	private String ToUserName;
-	//·¢ËÍ·½Î¢ĞÅºÅ
+	//å‘é€æ–¹å¾®ä¿¡å·
 	private String FromUserName;
-	//´´½¨Ê±¼ä
+	//åˆ›å»ºæ—¶é—´
 	private long CreateTime;
-	//ÏûÏ¢ÀàĞÍ
+	//æ¶ˆæ¯ç±»å‹
 	private String MsgType;
 	public String getToUserName() {
 		return ToUserName;

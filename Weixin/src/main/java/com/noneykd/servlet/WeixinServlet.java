@@ -17,7 +17,7 @@ import com.noneykd.util.WeixinUtil;
 
 public class WeixinServlet extends HttpServlet {
 	/**
-	 * ½ÓÈëÑéÖ¤
+	 * æ¥å…¥éªŒè¯
 	 */
 	private static final long serialVersionUID = 1L;
 
@@ -37,7 +37,7 @@ public class WeixinServlet extends HttpServlet {
 	
 	
 	/**
-	 * ÏûÏ¢µÄ½ÓÊÕÓëÏìÓ¦
+	 * æ¶ˆæ¯çš„æ¥æ”¶ä¸å“åº”
 	 */
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -60,10 +60,10 @@ public class WeixinServlet extends HttpServlet {
 					message = MessageUtil.initNewsMessage(toUserName, fromUserName);
 				}else if("3".equals(content)){
 					message = MessageUtil.initText(toUserName, fromUserName, MessageUtil.threeMenu());
-				}else if("?".equals(content) || "£¿".equals(content)){
+				}else if("?".equals(content) || "ï¼Ÿ".equals(content)){
 					message = MessageUtil.initText(toUserName, fromUserName, MessageUtil.menuText());
-				}else if(content.startsWith("·­Òë")){
-					String word = content.replaceAll("^·­Òë", "").trim();
+				}else if(content.startsWith("ç¿»è¯‘")){
+					String word = content.replaceAll("^ç¿»è¯‘", "").trim();
 					if("".equals(word)){
 						message = MessageUtil.initText(toUserName, fromUserName, MessageUtil.threeMenu());
 					}else{

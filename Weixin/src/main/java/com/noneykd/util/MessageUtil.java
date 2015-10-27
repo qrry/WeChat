@@ -24,7 +24,7 @@ import com.noneykd.po.NewsMessage;
 import com.noneykd.po.TextMessage;
 import com.thoughtworks.xstream.XStream;
 /**
- * ÏûÏ¢·â×°Àà
+ * æ¶ˆæ¯å°è£…ç±»
  * @author Stephen
  *
  */
@@ -46,7 +46,7 @@ public class MessageUtil {
 	public static final String MESSAGE_SCANCODE= "scancode_push";
 	
 	/**
-	 * xml×ªÎªmap¼¯ºÏ
+	 * xmlè½¬ä¸ºmapé›†åˆ
 	 * @param request
 	 * @return
 	 * @throws IOException
@@ -71,7 +71,7 @@ public class MessageUtil {
 	}
 	
 	/**
-	 * ½«ÎÄ±¾ÏûÏ¢¶ÔÏó×ªÎªxml
+	 * å°†æ–‡æœ¬æ¶ˆæ¯å¯¹è±¡è½¬ä¸ºxml
 	 * @param textMessage
 	 * @return
 	 */
@@ -82,7 +82,7 @@ public class MessageUtil {
 	}
 	
 	/**
-	 * ×é×°ÎÄ±¾ÏûÏ¢
+	 * ç»„è£…æ–‡æœ¬æ¶ˆæ¯
 	 * @param toUserName
 	 * @param fromUserName
 	 * @param content
@@ -99,43 +99,43 @@ public class MessageUtil {
 	}
 	
 	/**
-	 * Ö÷²Ëµ¥
+	 * ä¸»èœå•
 	 * @return
 	 */
 	public static String menuText(){
 		StringBuffer sb = new StringBuffer();
-		sb.append("»¶Ó­ÄúµÄ¹Ø×¢£¬Çë°´ÕÕ²Ëµ¥ÌáÊ¾½øĞĞ²Ù×÷£º\n\n");
-		sb.append("1¡¢¼ò½é\n");
-		sb.append("2¡¢´ı¶¨\n");
-		sb.append("3¡¢´Ê×é·­Òë\n\n");
-		sb.append("»Ø¸´£¿µ÷³ö´Ë²Ëµ¥¡£");
+		sb.append("æ¬¢è¿æ‚¨çš„å…³æ³¨ï¼Œè¯·æŒ‰ç…§èœå•æç¤ºè¿›è¡Œæ“ä½œï¼š\n\n");
+		sb.append("1ã€ç®€ä»‹\n");
+		sb.append("2ã€å¾…å®š\n");
+		sb.append("3ã€è¯ç»„ç¿»è¯‘\n\n");
+		sb.append("å›å¤ï¼Ÿè°ƒå‡ºæ­¤èœå•ã€‚");
 		return sb.toString();
 	}
 	
 	public static String firstMenu(){
 		StringBuffer sb = new StringBuffer();
-		sb.append("¸Ã¹«ÖÚºÅÔİÊ±¿ª·¢ÖĞ£¬Ã»ÓĞÊ²Ã´ĞÂ¶«Î÷");
+		sb.append("è¯¥å…¬ä¼—å·æš‚æ—¶å¼€å‘ä¸­ï¼Œæ²¡æœ‰ä»€ä¹ˆæ–°ä¸œè¥¿");
 		return sb.toString();
 	}
 	
 	public static String secondMenu(){
 		StringBuffer sb = new StringBuffer();
-		sb.append("²¿·Ö´úÂëÀ´×ÔÄ½¿ÎÍø£¬ÓĞĞËÈ¤µÄÍ¬Ñ§¿ÉÒÔÈ¥¿´¿´¡£");
+		sb.append("éƒ¨åˆ†ä»£ç æ¥è‡ªæ…•è¯¾ç½‘ï¼Œæœ‰å…´è¶£çš„åŒå­¦å¯ä»¥å»çœ‹çœ‹ã€‚");
 		return sb.toString();
 	}
 	
 	public static String threeMenu(){
 		StringBuffer sb = new StringBuffer();
-		sb.append("´Ê×é·­ÒëÊ¹ÓÃÖ¸ÄÏ\n\n");
-		sb.append("Ê¹ÓÃÊ¾Àı£º\n");
-		sb.append("·­Òë×ãÇò\n");
-		sb.append("·­ÒëÖĞ¹ú×ãÇò\n");
-		sb.append("·­Òëfootball\n\n");
-		sb.append("»Ø¸´£¿ÏÔÊ¾Ö÷²Ëµ¥¡£");
+		sb.append("è¯ç»„ç¿»è¯‘ä½¿ç”¨æŒ‡å—\n\n");
+		sb.append("ä½¿ç”¨ç¤ºä¾‹ï¼š\n");
+		sb.append("ç¿»è¯‘è¶³çƒ\n");
+		sb.append("ç¿»è¯‘ä¸­å›½è¶³çƒ\n");
+		sb.append("ç¿»è¯‘football\n\n");
+		sb.append("å›å¤ï¼Ÿæ˜¾ç¤ºä¸»èœå•ã€‚");
 		return sb.toString();
 	}
 	/**
-	 * Í¼ÎÄÏûÏ¢×ªÎªxml
+	 * å›¾æ–‡æ¶ˆæ¯è½¬ä¸ºxml
 	 * @param newsMessage
 	 * @return
 	 */
@@ -147,7 +147,7 @@ public class MessageUtil {
 	}
 	
 	/**
-	 * Í¼Æ¬ÏûÏ¢×ªÎªxml
+	 * å›¾ç‰‡æ¶ˆæ¯è½¬ä¸ºxml
 	 * @param imageMessage
 	 * @return
 	 */
@@ -158,7 +158,7 @@ public class MessageUtil {
 	}
 	
 	/**
-	 * ÒôÀÖÏûÏ¢×ªÎªxml
+	 * éŸ³ä¹æ¶ˆæ¯è½¬ä¸ºxml
 	 * @param musicMessage
 	 * @return
 	 */
@@ -168,7 +168,7 @@ public class MessageUtil {
 		return xstream.toXML(musicMessage);
 	}
 	/**
-	 * Í¼ÎÄÏûÏ¢µÄ×é×°
+	 * å›¾æ–‡æ¶ˆæ¯çš„ç»„è£…
 	 * @param toUserName
 	 * @param fromUserName
 	 * @return
@@ -179,8 +179,8 @@ public class MessageUtil {
 		NewsMessage newsMessage = new NewsMessage();
 		
 		News news = new News();
-		news.setTitle("¹«ÖÚºÅ½éÉÜ");
-		news.setDescription("Ä½¿ÎÍøÊÇ´¹Ö±µÄ»¥ÁªÍøIT¼¼ÄÜÃâ·ÑÑ§Ï°ÍøÕ¾¡£ÒÔ¶À¼ÒÊÓÆµ½Ì³Ì¡¢ÔÚÏß±à³Ì¹¤¾ß¡¢Ñ§Ï°¼Æ»®¡¢ÎÊ´ğÉçÇøÎªºËĞÄÌØÉ«¡£ÔÚÕâÀï£¬Äã¿ÉÒÔÕÒµ½×îºÃµÄ»¥ÁªÍø¼¼ÊõÅ£ÈË£¬Ò²¿ÉÒÔÍ¨¹ıÃâ·ÑµÄÔÚÏß¹«¿ªÊÓÆµ¿Î³ÌÑ§Ï°¹úÄÚÁìÏÈµÄ»¥ÁªÍøIT¼¼Êõ¡£Ä½¿ÎÍø¿Î³Ìº­¸ÇÇ°¶Ë¿ª·¢¡¢PHP¡¢Html5¡¢Android¡¢iOS¡¢SwiftµÈITÇ°ÑØ¼¼ÊõÓïÑÔ£¬°üÀ¨»ù´¡¿Î³Ì¡¢ÊµÓÃ°¸Àı¡¢¸ß¼¶·ÖÏíÈı´óÀàĞÍ£¬ÊÊºÏ²»Í¬½×¶ÎµÄÑ§Ï°ÈËÈº¡£");
+		news.setTitle("å…¬ä¼—å·ä»‹ç»");
+		news.setDescription("æ…•è¯¾ç½‘æ˜¯å‚ç›´çš„äº’è”ç½‘ITæŠ€èƒ½å…è´¹å­¦ä¹ ç½‘ç«™ã€‚ä»¥ç‹¬å®¶è§†é¢‘æ•™ç¨‹ã€åœ¨çº¿ç¼–ç¨‹å·¥å…·ã€å­¦ä¹ è®¡åˆ’ã€é—®ç­”ç¤¾åŒºä¸ºæ ¸å¿ƒç‰¹è‰²ã€‚åœ¨è¿™é‡Œï¼Œä½ å¯ä»¥æ‰¾åˆ°æœ€å¥½çš„äº’è”ç½‘æŠ€æœ¯ç‰›äººï¼Œä¹Ÿå¯ä»¥é€šè¿‡å…è´¹çš„åœ¨çº¿å…¬å¼€è§†é¢‘è¯¾ç¨‹å­¦ä¹ å›½å†…é¢†å…ˆçš„äº’è”ç½‘ITæŠ€æœ¯ã€‚æ…•è¯¾ç½‘è¯¾ç¨‹æ¶µç›–å‰ç«¯å¼€å‘ã€PHPã€Html5ã€Androidã€iOSã€Swiftç­‰ITå‰æ²¿æŠ€æœ¯è¯­è¨€ï¼ŒåŒ…æ‹¬åŸºç¡€è¯¾ç¨‹ã€å®ç”¨æ¡ˆä¾‹ã€é«˜çº§åˆ†äº«ä¸‰å¤§ç±»å‹ï¼Œé€‚åˆä¸åŒé˜¶æ®µçš„å­¦ä¹ äººç¾¤ã€‚");
 		news.setPicUrl("http://noneykd.6655.la/Weixin/image/imooc.jpg");
 		news.setUrl("www.imooc.com");
 		
@@ -198,7 +198,7 @@ public class MessageUtil {
 	}
 	
 	/**
-	 * ×é×°Í¼Æ¬ÏûÏ¢
+	 * ç»„è£…å›¾ç‰‡æ¶ˆæ¯
 	 * @param toUserName
 	 * @param fromUserName
 	 * @return
@@ -218,7 +218,7 @@ public class MessageUtil {
 	}
 	
 	/**
-	 * ×é×°ÒôÀÖÏûÏ¢
+	 * ç»„è£…éŸ³ä¹æ¶ˆæ¯
 	 * @param toUserName
 	 * @param fromUserName
 	 * @return
@@ -228,7 +228,7 @@ public class MessageUtil {
 		Music music = new Music();
 		music.setThumbMediaId("WsHCQr1ftJQwmGUGhCP8gZ13a77XVg5Ah_uHPHVEAQuRE5FEjn-DsZJzFZqZFeFk");
 		music.setTitle("see you again");
-		music.setDescription("ËÙ7Æ¬Î²Çú");
+		music.setDescription("é€Ÿ7ç‰‡å°¾æ›²");
 		music.setMusicUrl("http://zapper.tunnel.mobi/Weixin/resource/See You Again.mp3");
 		music.setHQMusicUrl("http://zapper.tunnel.mobi/Weixin/resource/See You Again.mp3");
 		

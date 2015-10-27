@@ -1,7 +1,7 @@
 package com.noneykd.menu;
 
 public class ViewButton extends Button{
-	//viewÀàĞÍ²Ëµ¥url
+	//viewç±»å‹èœå•url
 	private String url;
 
 	public String getUrl() {

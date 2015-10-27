@@ -1,7 +1,7 @@
 package com.noneykd.menu;
 
 public class Menu {
-	//Ò»¼¶²Ëµ¥
+	//èœå•
 	private Button[] button;
 
 	public Button[] getButton() {
