@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd 
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+	<context:component-scan base-package="com.noneykd.weixin" />
+	<bean id="propertyPlaceholderConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath*:/config/redis.properties</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- 线上环境 -->
+	<!-- 
+    <bean id="configManager" class="com.zhe800.imago.client.ConfigManager">
+    </bean>
+    -->
+    <!-- 测试环境  -->
+<!--     <bean id="configManager" class="com.zhe800.imago.client.ConfigManager">
+        <constructor-arg name="serverList"
+                            value="192.168.10.66:2181,192.168.10.57:2181,192.168.10.58:2181"></constructor-arg>
+    </bean> -->
+</beans>
