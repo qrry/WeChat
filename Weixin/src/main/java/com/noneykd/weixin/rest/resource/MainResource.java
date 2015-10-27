@@ -1,33 +1,26 @@
 package com.noneykd.weixin.rest.resource;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.util.Date;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.CookieParam;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.CharEncoding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.noneykd.weixin.po.UserInfo;
 import com.noneykd.weixin.redis.service.WexinRedisService;
 import com.noneykd.weixin.rest.resource.response.ErrorResponse;
-import com.noneykd.weixin.util.DateTimeUtil;
+import com.noneykd.weixin.service.WeixinService;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiResponse;
@@ -45,6 +38,8 @@ public class MainResource {
 	
 	@Autowired
 	private WexinRedisService wexinRedisService;
+	@Autowired
+	private WeixinService weixinService;
 
 	@GET
 	@Path("/token")
@@ -78,8 +73,8 @@ public class MainResource {
 			@ApiResponse(code = 200, message = "接口调用成功", response = ErrorResponse.class) })
 	public Response openid(@Context HttpServletRequest req) {
 		try {
-			String token = wexinRedisService.getToken();
-			return Response.status(Response.Status.OK).entity(token)
+//			String token = wexinRedisService.getToken();
+			return Response.status(Response.Status.OK).entity("暂时还没有实现该方法!")
 					.type(MediaType.APPLICATION_JSON_TYPE).build();
 
 		} catch (Exception e) {
@@ -92,17 +87,23 @@ public class MainResource {
 
 	}
 	
-	@GET
+	@POST
 	@Path("/user")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	@ApiOperation(value = "获取user信息", notes = "获取微信openid接口", response = Response.class)
+	@ApiOperation(value = "获取user信息", notes = "获取微信用户信息接口", response = Response.class)
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "参数错误", response = ErrorResponse.class),
 			@ApiResponse(code = 500, message = "服务器内部错误", response = ErrorResponse.class),
 			@ApiResponse(code = 200, message = "接口调用成功", response = ErrorResponse.class) })
-	public Response user(@FormParam(value = "openid") String openid,@Context HttpServletRequest req) {
+	public Response user(@FormParam("openid") String openid,@Context HttpServletRequest req) {
+		if (StringUtils.isBlank(openid)) {
+			throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
+					.entity(new ErrorResponse("提交的openid为空", "openid id is null",
+							Response.Status.BAD_REQUEST.getStatusCode(), StringUtils.EMPTY))
+					.type(MediaType.APPLICATION_JSON_TYPE).build());
+		}
 		try {
-			String token = wexinRedisService.getToken();
-			return Response.status(Response.Status.OK).entity(token)
+			UserInfo user = weixinService.getUserInfo(openid);
+			return Response.status(Response.Status.OK).entity(user)
 					.type(MediaType.APPLICATION_JSON_TYPE).build();
 
 		} catch (Exception e) {
