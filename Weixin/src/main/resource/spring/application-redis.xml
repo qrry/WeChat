@@ -18,8 +18,8 @@
 	</bean>
 	
 	<bean id="shardedJedisSentinelPool" class="com.noneykd.weixin.redis.base.ShardedJedisSentinelPool">
-		<constructor-arg name="masterNames" value="mymaster"/>
-		<constructor-arg name="sentinels" value="192.168.90.153:26379" />
+		<constructor-arg name="masterNames" value="${redis.masterNames}"/>
+		<constructor-arg name="sentinels" value="${redis.sentinels}" />
 		<constructor-arg name="poolConfig" ref="poolConfig" />
 		<constructor-arg name="timeout" value="${redis.opTimeOut}" />
 	</bean>

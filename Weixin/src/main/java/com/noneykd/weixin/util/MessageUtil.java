@@ -52,6 +52,7 @@ public class MessageUtil {
 	 * @throws IOException
 	 * @throws DocumentException
 	 */
+	@SuppressWarnings("unchecked")
 	public static Map<String, String> xmlToMap(HttpServletRequest request) throws IOException, DocumentException{
 		Map<String, String> map = new HashMap<String, String>();
 		SAXReader reader = new SAXReader();
