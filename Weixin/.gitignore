@@ -1,3 +1,6 @@
-/build/
 target
 /src/test/java
+.settings
+.classpath
+.project
+.tern-project
