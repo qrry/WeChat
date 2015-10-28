@@ -3,6 +3,7 @@ package com.noneykd.weixin.web.controller;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,11 +15,13 @@ import org.apache.commons.lang3.CharEncoding;
 import org.apache.http.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.noneykd.weixin.po.UserAccessToken;
+import com.noneykd.weixin.redis.service.WexinRedisService;
 import com.noneykd.weixin.util.Constants;
 import com.noneykd.weixin.util.WeixinUtil;
 
@@ -27,34 +30,41 @@ import com.noneykd.weixin.util.WeixinUtil;
 public class AuthorizeController {
 	
 	private static final String redirectUrl = "http://noneykd.6655.la/Weixin/wx/oauth/redirect".intern();
-	private static String returnTo;
+	
 	private static final Logger logger = LoggerFactory
 			.getLogger(AuthorizeController.class);
+	
+	@Autowired
+	private WexinRedisService wexinRedisService;
 
 	@RequestMapping("redirect")
 	public String redirect(HttpServletRequest req, HttpServletResponse resp,String code,String state,Model model) {
-		UserAccessToken user = null;
-		if(StringUtils.isNotBlank(code)){
-			try {
-				JSONObject json = WeixinUtil.getUserAccessToken(code);
-				logger.info(json.toString());
-				if(json!=null){
-					if(json.get("errcode")==null){
-						user = (UserAccessToken) JSONObject.toBean(json,UserAccessToken.class);
-					}
-				}
-			} catch (ParseException e) {
-				logger.error(e.getMessage());
-			} catch (IOException e) {
-				logger.error(e.getMessage());
-			}
-			if(user!=null){
-				model.addAttribute("openid", user.getOpenid());
-			}else{
-				model.addAttribute("openid", "null");
-			}
+		if(StringUtils.isBlank(code)){
+			
 		}
-//		return "redirect:http://noneykd.6655.la/Weixin/wx/oauth/hello";
+		if(StringUtils.isBlank(state)){
+			
+		}
+		String returnTo = wexinRedisService.getReturnUrl(state);
+		UserAccessToken user = null;
+		try {
+			JSONObject json = WeixinUtil.getUserAccessToken(code);
+			logger.info(json.toString());
+			if(json!=null){
+				if(json.get("errcode")==null){
+					user = (UserAccessToken) JSONObject.toBean(json,UserAccessToken.class);
+				}
+			}
+		} catch (ParseException e) {
+			logger.error(e.getMessage());
+		} catch (IOException e) {
+			logger.error(e.getMessage());
+		}
+		if(user!=null){
+			model.addAttribute("openid", user.getOpenid());
+		}else{
+			model.addAttribute("openid", "null");
+		}
 		return "redirect:"+returnTo;
 	}
 	
@@ -69,7 +79,8 @@ public class AuthorizeController {
 	@RequestMapping("")
 	public String oauth(HttpServletRequest req, HttpServletResponse resp, String return_to) {
 		String rurl = null;
-		returnTo = return_to;
+		String state = UUID.randomUUID().toString().replace("-","");
+		wexinRedisService.setReturnUrl(state, return_to);
 		try {
 			rurl = URLEncoder.encode(redirectUrl,CharEncoding.UTF_8);
 		} catch (UnsupportedEncodingException e) {
@@ -77,8 +88,11 @@ public class AuthorizeController {
 		}
 		String url = Constants.AUTHORIZE_URL.replace("APPID", Constants.APPID)
 				.replace("REDIRECT_URI", rurl).replace("SCOPE", Constants.BASE_SCOPE)
-				.replace("STATE", Constants.STATE);
+				.replace("STATE", state);
 		logger.info(url);
 		return "redirect:"+url;
+	}
+	public static void main(String[] args) {
+		System.out.println(UUID.randomUUID().toString().replace("-",""));
 	}
 }
