@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.noneykd.weixin.po.UserInfo;
-import com.noneykd.weixin.redis.service.WexinRedisService;
 import com.noneykd.weixin.rest.resource.response.ErrorResponse;
 import com.noneykd.weixin.service.WeixinService;
 import com.wordnik.swagger.annotations.Api;
@@ -37,8 +36,6 @@ public class MainResource {
 	private static Logger LOGGER = LoggerFactory.getLogger(MainResource.class);
 	
 	@Autowired
-	private WexinRedisService wexinRedisService;
-	@Autowired
 	private WeixinService weixinService;
 
 	@GET
@@ -50,31 +47,8 @@ public class MainResource {
 			@ApiResponse(code = 200, message = "接口调用成功", response = ErrorResponse.class) })
 	public Response token(@Context HttpServletRequest req) {
 		try {
-			String token = wexinRedisService.getToken();
+			String token = weixinService.getToken();
 			return Response.status(Response.Status.OK).entity(token)
-					.type(MediaType.APPLICATION_JSON_TYPE).build();
-
-		} catch (Exception e) {
-			LOGGER.error("服务器内部错误", e);
-			throw new WebApplicationException(Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-					.entity(new ErrorResponse("服务器内部错误", e.getMessage(),
-							Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), StringUtils.EMPTY))
-					.type(MediaType.APPLICATION_JSON_TYPE).build());
-		}
-
-	}
-	
-	@GET
-	@Path("/openid")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	@ApiOperation(value = "获取openid", notes = "获取微信openid接口", response = Response.class)
-	@ApiResponses(value = { @ApiResponse(code = 400, message = "参数错误", response = ErrorResponse.class),
-			@ApiResponse(code = 500, message = "服务器内部错误", response = ErrorResponse.class),
-			@ApiResponse(code = 200, message = "接口调用成功", response = ErrorResponse.class) })
-	public Response openid(@Context HttpServletRequest req) {
-		try {
-//			String token = wexinRedisService.getToken();
-			return Response.status(Response.Status.OK).entity("暂时还没有实现该方法!")
 					.type(MediaType.APPLICATION_JSON_TYPE).build();
 
 		} catch (Exception e) {
@@ -115,5 +89,4 @@ public class MainResource {
 		}
 
 	}
-
 }

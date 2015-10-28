@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.noneykd.weixin.menu.Menu;
+import com.noneykd.weixin.po.AccessToken;
 import com.noneykd.weixin.po.UserInfo;
 import com.noneykd.weixin.redis.service.WexinRedisService;
 import com.noneykd.weixin.util.WeixinUtil;
@@ -58,6 +59,28 @@ public class WeixinService {
 				throw new IllegalAccessError("没有该openid：" + openid + "信息");
 			}
 		}
+	}
+	
+	public String getToken() {
+		String token = wexinRedisService.getToken();
+		if(StringUtils.isBlank(token)){
+			AccessToken accessToken;
+			try {
+				logger.debug("开始获取微信票据。");
+				accessToken = WeixinUtil.getAccessToken();
+				if(accessToken!=null){
+					token = accessToken.getToken();
+					wexinRedisService.setToken(token);
+					logger.info("获取到的票据:{}",accessToken.getToken());
+				}
+				logger.debug("获取微信票据结束。");
+			} catch (ParseException e) {
+				logger.error("微信票出错：{}",e);
+			} catch (IOException e) {
+				logger.error("微信票出错：{}",e);
+			}
+		}
+		return token;
 	}
 	
 	public int setMenu() throws ParseException, IOException {

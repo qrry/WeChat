@@ -255,23 +255,6 @@ public class WeixinUtil {
 	}
 
 	/**
-	 * 用户同意授权，获取code
-	 * 
-	 * @param redirect_uri
-	 * @param scope
-	 * @param state
-	 * @throws ParseException
-	 * @throws IOException
-	 */
-	public static JSONObject authorize(String redirect_uri, String scope,
-			String state) throws ParseException, IOException {
-		String url = Constants.AUTHORIZE_URL.replace("APPID", Constants.APPID)
-				.replace("REDIRECT_URI", redirect_uri).replace("SCOPE", scope)
-				.replace("STATE", state);
-		return doGetStr(url);
-	}
-
-	/**
 	 * 通过code换取网页授权access_token
 	 * 
 	 * @param code
