@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.util.Arrays;
 
 import net.sf.json.JSONObject;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.ParseException;
 import org.slf4j.Logger;
@@ -64,6 +66,11 @@ public class WeixinService {
 		}
 	}
 
+	/**
+	 * 获取token
+	 * 
+	 * @return
+	 */
 	public String getToken() {
 		String token = wexinRedisService.getToken();
 		if (StringUtils.isBlank(token)) {
@@ -86,6 +93,12 @@ public class WeixinService {
 		return token;
 	}
 
+	/**
+	 * 获取jsapi_ticket
+	 * 
+	 * @param type
+	 * @return
+	 */
 	public String getJsApiTicket(String type) {
 		String ticket = wexinRedisService.getJsApiTicket(type);
 		if (StringUtils.isBlank(ticket)) {
@@ -107,6 +120,34 @@ public class WeixinService {
 			}
 		}
 		return ticket;
+	}
+
+	/**
+	 * 签名
+	 * 
+	 * @param noncestr
+	 * @param jsapi_ticket
+	 * @param timestamp
+	 * @param url
+	 * @return
+	 */
+	public String signature(String noncestr, String jsapi_ticket,
+			String timestamp, String url) {
+		String[] arr = new String[] { "noncestr=" + noncestr,
+				"jsapi_ticket=" + jsapi_ticket, "timestamp=" + timestamp,
+				"url=" + url };
+		// 排序
+		Arrays.sort(arr);
+		// 生成字符串
+		StringBuffer content = new StringBuffer();
+		for (int i = 0; i < arr.length; i++) {
+			content.append(arr[i]).append('&');
+		}
+		String temp = content.substring(0, content.length() - 1);
+		// sha1加密
+		String signature = DigestUtils.sha1Hex(temp);
+		logger.info("待签名字符串：{},签名：{}", temp, signature);
+		return signature;
 	}
 
 	public int setMenu() throws ParseException, IOException {

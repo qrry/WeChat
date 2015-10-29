@@ -25,7 +25,7 @@ public class MainController {
 	private static final String token = "noneykd".intern();
 
 	// 日志调试
-	private static Logger LOGGER = LoggerFactory
+	private static Logger logger = LoggerFactory
 			.getLogger(MainController.class);
 
 	/**
@@ -42,7 +42,7 @@ public class MainController {
 		String timestamp = req.getParameter("timestamp");
 		String nonce = req.getParameter("nonce");
 		String echostr = req.getParameter("echostr");
-		LOGGER.debug("开始接入验证,signature:{},timestamp:{},nonce:{},echostr:{}.",
+		logger.debug("开始接入验证,signature:{},timestamp:{},nonce:{},echostr:{}.",
 				signature, timestamp, nonce, echostr);
 		PrintWriter out = resp.getWriter();
 		if (checkSignature(signature, timestamp, nonce)) {
