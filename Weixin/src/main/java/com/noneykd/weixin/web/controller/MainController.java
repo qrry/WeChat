@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.noneykd.weixin.util.MessageUtil;
-import com.noneykd.weixin.util.WeixinUtil;
 
 @Controller
 @RequestMapping("/wx")
@@ -92,7 +91,7 @@ public class MainController {
 								fromUserName, MessageUtil.threeMenu());
 					} else {
 						message = MessageUtil.initText(toUserName,
-								fromUserName, WeixinUtil.translate(word));
+								fromUserName, MessageUtil.translate(word));
 					}
 				}
 			} else if (MessageUtil.MESSAGE_EVNET.equals(msgType)) {

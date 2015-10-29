@@ -2,12 +2,13 @@ package com.noneykd.weixin.redis.service;
 
 import net.sf.json.JSONObject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.noneykd.weixin.po.UserInfo;
-
+import com.noneykd.weixin.util.Constants;
 
 @Component
 public class WexinRedisService extends RedisBaseService {
@@ -16,6 +17,8 @@ public class WexinRedisService extends RedisBaseService {
 			.getLogger(WexinRedisService.class);
 
 	private final static String WEIXIN_TOKEN = "WX_TOKEN".intern();
+	private final static String JSAPI_TICKET = "JSAPI_TICKET".intern();//jsapi
+	private final static String KQAPI_TICKET = "KQAPI_TICKET".intern();//卡券api
 	private final static String USER_PREDIX = "WX_USER_OPENID".intern();
 
 	/**
@@ -42,6 +45,42 @@ public class WexinRedisService extends RedisBaseService {
 			result = get(WEIXIN_TOKEN);
 		} catch (Exception e) {
 			logger.error("getToken " + e.getMessage());
+		}
+		return result;
+	}
+
+	/**
+	 * 保存jsapi_ticket
+	 * 
+	 * @param token
+	 */
+	public void setJsApiTicket(String ticket, String type) {
+		String key = JSAPI_TICKET;
+		if(StringUtils.isNotBlank(type)&&type.equals(Constants.KQ_TYPE)){
+			key = KQAPI_TICKET;
+		}
+		try {
+			set(key, ticket, HOURS * 2);
+		} catch (Exception e) {
+			logger.error("setJsApiTicket " + e.getMessage());
+		}
+	}
+
+	/**
+	 * 获取jsapi_ticket
+	 * 
+	 * @return
+	 */
+	public String getJsApiTicket(String type) {
+		String key = JSAPI_TICKET;
+		if(StringUtils.isNotBlank(type)&&type.equals(Constants.KQ_TYPE)){
+			key = KQAPI_TICKET;
+		}
+		String result = null;
+		try {
+			result = get(key);
+		} catch (Exception e) {
+			logger.error("getJsApiTicket " + e.getMessage());
 		}
 		return result;
 	}
