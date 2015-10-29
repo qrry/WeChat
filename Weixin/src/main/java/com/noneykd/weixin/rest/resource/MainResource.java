@@ -145,7 +145,9 @@ public class MainResource {
 	public Response signature(@QueryParam("noncestr") String noncestr,
 			@QueryParam("jsapi_ticket") String jsapi_ticket,
 			@QueryParam("timestamp") String timestamp,
-			@QueryParam("url") String url, @Context HttpServletRequest req) {
+			@QueryParam("url") String url,
+			@QueryParam("(可选)callback") String callback,
+			@Context HttpServletRequest req) {
 		if (StringUtils.isBlank(noncestr)) {
 			throw new WebApplicationException(Response
 					.status(Response.Status.BAD_REQUEST)
@@ -158,8 +160,9 @@ public class MainResource {
 			throw new WebApplicationException(Response
 					.status(Response.Status.BAD_REQUEST)
 					.entity(new ErrorResponse("提交的jsapi_ticket为空",
-							"jsapi_ticket id is null", Response.Status.BAD_REQUEST
-									.getStatusCode(), StringUtils.EMPTY))
+							"jsapi_ticket id is null",
+							Response.Status.BAD_REQUEST.getStatusCode(),
+							StringUtils.EMPTY))
 					.type(MediaType.APPLICATION_JSON_TYPE).build());
 		}
 		if (StringUtils.isBlank(timestamp)) {
@@ -173,17 +176,26 @@ public class MainResource {
 		if (StringUtils.isBlank(url)) {
 			throw new WebApplicationException(Response
 					.status(Response.Status.BAD_REQUEST)
-					.entity(new ErrorResponse("提交的url为空",
-							"url id is null", Response.Status.BAD_REQUEST
-									.getStatusCode(), StringUtils.EMPTY))
+					.entity(new ErrorResponse("提交的url为空", "url id is null",
+							Response.Status.BAD_REQUEST.getStatusCode(),
+							StringUtils.EMPTY))
 					.type(MediaType.APPLICATION_JSON_TYPE).build());
+		}
+		String _callback = callback;
+		if (StringUtils.isBlank(_callback)) {
+			_callback = "callback";
 		}
 		try {
 			String signature = weixinService.signature(noncestr, jsapi_ticket,
 					timestamp, url);
 			JSONObject json = new JSONObject();
 			json.put("signature", signature);
-			return Response.status(Response.Status.OK).entity(json)
+			json.put("noncestr", noncestr);
+			json.put("jsapi_ticket", jsapi_ticket);
+			json.put("timestamp", timestamp);
+			json.put("url", url);
+			return Response.status(Response.Status.OK)
+					.entity(_callback + "(" + json + ")")
 					.type(MediaType.APPLICATION_JSON_TYPE).build();
 
 		} catch (Exception e) {
