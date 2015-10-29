@@ -1,5 +1,8 @@
 package com.noneykd.weixin.rest.resource;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -34,7 +37,7 @@ public class MainResource {
 	 * 日志调试.
 	 */
 	private static Logger LOGGER = LoggerFactory.getLogger(MainResource.class);
-	
+
 	@Autowired
 	private WeixinService weixinService;
 
@@ -42,37 +45,46 @@ public class MainResource {
 	@Path("/token")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@ApiOperation(value = "获取票据", notes = "获取微信票据接口", response = Response.class)
-	@ApiResponses(value = { @ApiResponse(code = 400, message = "参数错误", response = ErrorResponse.class),
+	@ApiResponses(value = {
+			@ApiResponse(code = 400, message = "参数错误", response = ErrorResponse.class),
 			@ApiResponse(code = 500, message = "服务器内部错误", response = ErrorResponse.class),
 			@ApiResponse(code = 200, message = "接口调用成功", response = ErrorResponse.class) })
 	public Response token(@Context HttpServletRequest req) {
 		try {
 			String token = weixinService.getToken();
-			return Response.status(Response.Status.OK).entity(token)
+			Map<String, String> map = new HashMap<String, String>();
+			map.put("token", token);
+			return Response.status(Response.Status.OK).entity(map)
 					.type(MediaType.APPLICATION_JSON_TYPE).build();
 
 		} catch (Exception e) {
 			LOGGER.error("服务器内部错误", e);
-			throw new WebApplicationException(Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+			throw new WebApplicationException(Response
+					.status(Response.Status.INTERNAL_SERVER_ERROR)
 					.entity(new ErrorResponse("服务器内部错误", e.getMessage(),
-							Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), StringUtils.EMPTY))
+							Response.Status.INTERNAL_SERVER_ERROR
+									.getStatusCode(), StringUtils.EMPTY))
 					.type(MediaType.APPLICATION_JSON_TYPE).build());
 		}
 
 	}
-	
+
 	@POST
 	@Path("/user")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@ApiOperation(value = "获取user信息", notes = "获取微信用户信息接口", response = Response.class)
-	@ApiResponses(value = { @ApiResponse(code = 400, message = "参数错误", response = ErrorResponse.class),
+	@ApiResponses(value = {
+			@ApiResponse(code = 400, message = "参数错误", response = ErrorResponse.class),
 			@ApiResponse(code = 500, message = "服务器内部错误", response = ErrorResponse.class),
 			@ApiResponse(code = 200, message = "接口调用成功", response = ErrorResponse.class) })
-	public Response user(@FormParam("openid") String openid,@Context HttpServletRequest req) {
+	public Response user(@FormParam("openid") String openid,
+			@Context HttpServletRequest req) {
 		if (StringUtils.isBlank(openid)) {
-			throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
-					.entity(new ErrorResponse("提交的openid为空", "openid id is null",
-							Response.Status.BAD_REQUEST.getStatusCode(), StringUtils.EMPTY))
+			throw new WebApplicationException(Response
+					.status(Response.Status.BAD_REQUEST)
+					.entity(new ErrorResponse("提交的openid为空",
+							"openid id is null", Response.Status.BAD_REQUEST
+									.getStatusCode(), StringUtils.EMPTY))
 					.type(MediaType.APPLICATION_JSON_TYPE).build());
 		}
 		try {
@@ -82,9 +94,11 @@ public class MainResource {
 
 		} catch (Exception e) {
 			LOGGER.error("服务器内部错误", e);
-			throw new WebApplicationException(Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+			throw new WebApplicationException(Response
+					.status(Response.Status.INTERNAL_SERVER_ERROR)
 					.entity(new ErrorResponse("服务器内部错误", e.getMessage(),
-							Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), StringUtils.EMPTY))
+							Response.Status.INTERNAL_SERVER_ERROR
+									.getStatusCode(), StringUtils.EMPTY))
 					.type(MediaType.APPLICATION_JSON_TYPE).build());
 		}
 
