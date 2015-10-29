@@ -137,7 +137,7 @@ public class MainResource {
 	@GET
 	@Path("/signature")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	@ApiOperation(value = "获取user信息", notes = "获取微信用户信息接口", response = Response.class)
+	@ApiOperation(value = "签名", notes = "签名返回signature", response = Response.class)
 	@ApiResponses(value = {
 			@ApiResponse(code = 400, message = "参数错误", response = ErrorResponse.class),
 			@ApiResponse(code = 500, message = "服务器内部错误", response = ErrorResponse.class),
