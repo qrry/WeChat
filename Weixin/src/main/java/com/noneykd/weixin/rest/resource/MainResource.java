@@ -24,6 +24,7 @@ import com.noneykd.weixin.service.WeixinService;
 import com.noneykd.weixin.util.Constants;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
 import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
 
@@ -146,7 +147,7 @@ public class MainResource {
 			@QueryParam("jsapi_ticket") String jsapi_ticket,
 			@QueryParam("timestamp") String timestamp,
 			@QueryParam("url") String url,
-			@QueryParam("(可选)callback") String callback,
+			@ApiParam("可选")@QueryParam("callback") String callback,
 			@Context HttpServletRequest req) {
 		if (StringUtils.isBlank(noncestr)) {
 			throw new WebApplicationException(Response
