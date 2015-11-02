@@ -12,10 +12,12 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.dom4j.DocumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.noneykd.weixin.service.WeixinService;
 import com.noneykd.weixin.util.MessageUtil;
 
 @Controller
@@ -25,8 +27,10 @@ public class MainController {
 	private static final String token = "noneykd".intern();
 
 	// 日志调试
-	private static Logger logger = LoggerFactory
-			.getLogger(MainController.class);
+	private static Logger logger = LoggerFactory.getLogger(MainController.class);
+
+	@Autowired
+	private WeixinService weixinService;
 
 	/**
 	 * 接入验证
@@ -36,14 +40,12 @@ public class MainController {
 	 * @throws IOException
 	 */
 	@RequestMapping(method = RequestMethod.GET)
-	public void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws IOException {
+	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		String signature = req.getParameter("signature");
 		String timestamp = req.getParameter("timestamp");
 		String nonce = req.getParameter("nonce");
 		String echostr = req.getParameter("echostr");
-		logger.debug("开始接入验证,signature:{},timestamp:{},nonce:{},echostr:{}.",
-				signature, timestamp, nonce, echostr);
+		logger.debug("开始接入验证,signature:{},timestamp:{},nonce:{},echostr:{}.", signature, timestamp, nonce, echostr);
 		PrintWriter out = resp.getWriter();
 		if (checkSignature(signature, timestamp, nonce)) {
 			out.print(echostr);
@@ -58,76 +60,22 @@ public class MainController {
 	 * @throws IOException
 	 */
 	@RequestMapping(method = RequestMethod.POST)
-	public void doPost(HttpServletRequest req, HttpServletResponse resp)
-			throws IOException {
+	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		req.setCharacterEncoding("UTF-8");
 		resp.setCharacterEncoding("UTF-8");
 		PrintWriter out = resp.getWriter();
 		try {
 			Map<String, String> map = MessageUtil.xmlToMap(req);
-			String fromUserName = map.get("FromUserName");
-			String toUserName = map.get("ToUserName");
-			String msgType = map.get("MsgType");
-			String content = map.get("Content");
-
-			String message = null;
-			if (MessageUtil.MESSAGE_TEXT.equals(msgType)) {
-				if ("1".equals(content)) {
-					message = MessageUtil.initText(toUserName, fromUserName,
-							MessageUtil.firstMenu());
-				} else if ("2".equals(content)) {
-					message = MessageUtil.initNewsMessage(toUserName,
-							fromUserName);
-				} else if ("3".equals(content)) {
-					message = MessageUtil.initText(toUserName, fromUserName,
-							MessageUtil.threeMenu());
-				} else if ("?".equals(content) || "？".equals(content)) {
-					message = MessageUtil.initText(toUserName, fromUserName,
-							MessageUtil.menuText());
-				} else if (content.startsWith("翻译")) {
-					String word = content.replaceAll("^翻译", "").trim();
-					if ("".equals(word)) {
-						message = MessageUtil.initText(toUserName,
-								fromUserName, MessageUtil.threeMenu());
-					} else {
-						message = MessageUtil.initText(toUserName,
-								fromUserName, MessageUtil.translate(word));
-					}
-				}
-			} else if (MessageUtil.MESSAGE_EVNET.equals(msgType)) {
-				String eventType = map.get("Event");
-				if (MessageUtil.MESSAGE_SUBSCRIBE.equals(eventType)) {
-					message = MessageUtil.initText(toUserName, fromUserName,
-							MessageUtil.menuText());
-				} else if (MessageUtil.MESSAGE_CLICK.equals(eventType)) {
-					message = MessageUtil.initText(toUserName, fromUserName,
-							MessageUtil.menuText());
-				} else if (MessageUtil.MESSAGE_VIEW.equals(eventType)) {
-					String url = map.get("EventKey");
-					message = MessageUtil.initText(toUserName, fromUserName,
-							url);
-				} else if (MessageUtil.MESSAGE_SCANCODE.equals(eventType)) {
-					String key = map.get("EventKey");
-					message = MessageUtil.initText(toUserName, fromUserName,
-							key);
-				}
-			} else if (MessageUtil.MESSAGE_LOCATION.equals(msgType)) {
-				String label = map.get("Label");
-				message = MessageUtil.initText(toUserName, fromUserName, label);
-			}
-
-			System.out.println(message);
-
+			String message = weixinService.autoresponce(map);
 			out.print(message);
 		} catch (DocumentException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		} finally {
 			out.close();
 		}
 	}
 
-	private boolean checkSignature(String signature, String timestamp,
-			String nonce) {
+	private boolean checkSignature(String signature, String timestamp, String nonce) {
 		String[] arr = new String[] { token, timestamp, nonce };
 		// 排序
 		Arrays.sort(arr);

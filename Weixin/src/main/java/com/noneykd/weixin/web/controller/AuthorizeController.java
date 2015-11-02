@@ -5,6 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.UUID;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -62,6 +63,8 @@ public class AuthorizeController {
 		}
 		if(user!=null){
 			model.addAttribute("openid", user.getOpenid());
+			Cookie cookie = new Cookie("openid", user.getOpenid());
+			resp.addCookie(cookie);
 		}else{
 			model.addAttribute("openid", "null");
 		}
@@ -76,7 +79,7 @@ public class AuthorizeController {
 		return "hello";
 	}
 	
-	@RequestMapping("")
+	@RequestMapping
 	public String oauth(HttpServletRequest req, HttpServletResponse resp, String return_to) {
 		String rurl = null;
 		String state = UUID.randomUUID().toString().replace("-","");
@@ -92,7 +95,5 @@ public class AuthorizeController {
 		logger.info(url);
 		return "redirect:"+url;
 	}
-	public static void main(String[] args) {
-		System.out.println(UUID.randomUUID().toString().replace("-",""));
-	}
+	
 }

@@ -1,6 +1,8 @@
 target
-/src/test/java
+/src/test/
 .settings
 .classpath
 .project
 .tern-project
+/bin/
+/src/main/node_modules/
