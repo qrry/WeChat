@@ -21,8 +21,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.noneykd.weixin.persist.redis.service.WexinRedisService;
 import com.noneykd.weixin.po.UserAccessToken;
-import com.noneykd.weixin.redis.service.WexinRedisService;
 import com.noneykd.weixin.util.Constants;
 import com.noneykd.weixin.util.WeixinUtil;
 
