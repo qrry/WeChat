@@ -17,7 +17,7 @@
 		<property name="timeBetweenEvictionRunsMillis" value="${redis.timeBetweenEvictionRunsMillis}" />
 	</bean>
 	
-	<bean id="shardedJedisSentinelPool" class="com.noneykd.weixin.redis.base.ShardedJedisSentinelPool">
+	<bean id="shardedJedisSentinelPool" class="com.noneykd.weixin.persist.redis.base.ShardedJedisSentinelPool">
 		<constructor-arg name="masterNames" value="${redis.masterNames}"/>
 		<constructor-arg name="sentinels" value="${redis.sentinels}" />
 		<constructor-arg name="poolConfig" ref="poolConfig" />

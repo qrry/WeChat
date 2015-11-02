@@ -1,4 +1,4 @@
-package com.noneykd.weixin.redis.service;
+package com.noneykd.weixin.persist.redis.service;
 
 import net.sf.json.JSONObject;
 

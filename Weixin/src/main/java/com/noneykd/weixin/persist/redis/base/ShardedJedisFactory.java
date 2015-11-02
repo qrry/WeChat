@@ -1,4 +1,4 @@
-package com.noneykd.weixin.redis.base;
+package com.noneykd.weixin.persist.redis.base;
 
 import java.util.List;
 

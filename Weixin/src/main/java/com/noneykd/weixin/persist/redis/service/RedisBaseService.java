@@ -1,9 +1,9 @@
-package com.noneykd.weixin.redis.service;
+package com.noneykd.weixin.persist.redis.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.noneykd.weixin.redis.base.ShardedJedisSentinelPool;
+import com.noneykd.weixin.persist.redis.base.ShardedJedisSentinelPool;
 
 import redis.clients.jedis.ShardedJedis;
 

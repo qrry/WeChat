@@ -9,9 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import com.noneykd.weixin.persist.redis.service.WexinRedisService;
 import com.noneykd.weixin.po.AccessToken;
 import com.noneykd.weixin.po.ApiTicket;
-import com.noneykd.weixin.redis.service.WexinRedisService;
 import com.noneykd.weixin.util.Constants;
 import com.noneykd.weixin.util.WeixinUtil;
 

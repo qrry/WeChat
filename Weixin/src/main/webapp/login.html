@@ -1,26 +1,22 @@
-<%@ page pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>java wireless</title>
  <link rel="shortcut icon" href="http://wiki.tuan800-inc.com/s/zh_CN/5635/60fd2eb45debbf4ede2b669f4c9b96b4ce40a937.14/_/favicon.ico" />
-<link rel="stylesheet" href='<c:url value="/css/bootstrap.css"></c:url>' />
-<link rel="stylesheet" href='<c:url value="/css/app.css"></c:url>' />
-<script src="<c:url value='/js/jquery.js'/>" type="text/javascript"></script>
-<script type="text/javascript" src="<c:url value="/js/bootstrap.js"></c:url>"></script>
+<link rel="stylesheet" href="css/bootstrap.css" />
+<link rel="stylesheet" href="css/app.css" />
+<script src="js/jquery.js" type="text/javascript"></script>
+<script type="text/javascript" src="js/bootstrap.js"></script>
 </head>
 <body>
 	<div class="container w-xxl w-auto-xs">
-		<br /> <span class="navbar-brand block m-t">JAVA WIRELESS</span>
+		<br /> <span class="navbar-brand block m-t">微信后台管理系统</span>
 		<div class="m-b-lg">
 			<div class="wrapper text-center">
 				<strong>用户登录</strong>
 			</div>
-			<form name="form"  class="form-validation" method="POST" action='<c:url value="/api/authen/login"></c:url>' >
+			<form name="form"  class="form-validation" method="POST" action="/Weixin/wx/admin/index" >
 				<div class="text-danger wrapper text-center" >
 					</div>
 				<div class="list-group list-group-sm">
