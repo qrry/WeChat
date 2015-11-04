@@ -22,6 +22,7 @@ import com.noneykd.weixin.po.UserInfo;
 import com.noneykd.weixin.rest.resource.response.ErrorResponse;
 import com.noneykd.weixin.service.WeixinService;
 import com.noneykd.weixin.util.Constants;
+import com.noneykd.weixin.util.WeixinUtil;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
@@ -48,12 +49,41 @@ public class MainResource {
 	@ApiResponses(value = {
 			@ApiResponse(code = 500, message = "服务器内部错误", response = ErrorResponse.class),
 			@ApiResponse(code = 200, message = "接口调用成功", response = ErrorResponse.class) })
-	public Response token(@Context HttpServletRequest req) {
+	public Response token(@Context HttpServletRequest req,
+			@QueryParam("timestamp") String timestamp, @QueryParam("noncestr") String noncestr,
+			@QueryParam("signature") String signature) {
+		if (StringUtils.isBlank(timestamp)) {
+			throw new WebApplicationException(Response
+					.status(Response.Status.BAD_REQUEST)
+					.entity(new ErrorResponse("提交的timestamp为空", "timestamp id is null",
+							Response.Status.BAD_REQUEST.getStatusCode(), StringUtils.EMPTY))
+					.type(MediaType.APPLICATION_JSON_TYPE).build());
+		}
+		if (StringUtils.isBlank(noncestr)) {
+			throw new WebApplicationException(Response
+					.status(Response.Status.BAD_REQUEST)
+					.entity(new ErrorResponse("提交的noncestr为空", "noncestr id is null",
+							Response.Status.BAD_REQUEST.getStatusCode(), StringUtils.EMPTY))
+					.type(MediaType.APPLICATION_JSON_TYPE).build());
+		}
+		if (StringUtils.isBlank(signature)) {
+			throw new WebApplicationException(Response
+					.status(Response.Status.BAD_REQUEST)
+					.entity(new ErrorResponse("提交的signature为空", "signature id is null",
+							Response.Status.BAD_REQUEST.getStatusCode(), StringUtils.EMPTY))
+					.type(MediaType.APPLICATION_JSON_TYPE).build());
+		}
+		String domain = req.getServerName();
+		if (!weixinService.isInDomain(domain)) {
+			domain = Constants.DEFAULT;
+		}
+		if (!StringUtils.equals(signature, WeixinUtil.signature(null, domain, timestamp, noncestr)))
+			throw new WebApplicationException(Response
+					.status(Response.Status.BAD_REQUEST)
+					.entity(new ErrorResponse("提交的签名不匹配", "signature id is match",
+							Response.Status.BAD_REQUEST.getStatusCode(), StringUtils.EMPTY))
+					.type(MediaType.APPLICATION_JSON_TYPE).build());
 		try {
-			String domain = req.getServerName();
-			if (!weixinService.isInDomain(domain)) {
-				domain = Constants.DEFAULT;
-			}
 			String token = weixinService.getToken(domain);
 			JSONObject json = new JSONObject();
 			json.put("token", token);

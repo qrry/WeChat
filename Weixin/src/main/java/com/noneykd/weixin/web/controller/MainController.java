@@ -2,13 +2,11 @@ package com.noneykd.weixin.web.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Arrays;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.dom4j.DocumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.noneykd.weixin.service.WeixinService;
 import com.noneykd.weixin.util.MessageUtil;
+import com.noneykd.weixin.util.WeixinUtil;
 
 @Controller
 @RequestMapping("/wx")
@@ -79,19 +78,17 @@ public class MainController {
 		}
 	}
 
+	/**
+	 * 验证签名
+	 * @param signature
+	 * @param timestamp
+	 * @param nonce
+	 * @return
+	 */
 	private boolean checkSignature(String signature, String timestamp, String nonce) {
 		String[] arr = new String[] { token, timestamp, nonce };
-		// 排序
-		Arrays.sort(arr);
-
-		// 生成字符串
-		StringBuffer content = new StringBuffer();
-		for (int i = 0; i < arr.length; i++) {
-			content.append(arr[i]);
-		}
-
-		// sha1加密
-		String temp = DigestUtils.sha1Hex(content.toString());
+		
+		String temp = WeixinUtil.signature(null, arr);
 
 		return temp.equals(signature);
 	}

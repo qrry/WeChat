@@ -13,9 +13,12 @@ import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.util.Arrays;
 
 import net.sf.json.JSONObject;
 
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.ParseException;
 
 import com.noneykd.weixin.menu.Button;
@@ -313,5 +316,28 @@ public class WeixinUtil {
 			result = jsonObject.getInt("errcode");
 		}
 		return result;
+	}
+
+	/**
+	 * 通用签名算法
+	 * 
+	 * @param args
+	 * @return
+	 */
+	public static String signature(String separator, String... args) {
+		String[] arr = args;
+		// 排序
+		Arrays.sort(arr);
+		// 生成字符串
+		StringBuffer content = new StringBuffer();
+		for (int i = 0, length = arr.length; i < length; i++) {
+			if (StringUtils.isNoneBlank(separator) && i < length - 1) {
+				content.append(arr[i]).append(separator);
+			} else {
+				content.append(arr[i]);
+			}
+		}
+		// sha1加密
+		return DigestUtils.sha1Hex(content.toString());
 	}
 }

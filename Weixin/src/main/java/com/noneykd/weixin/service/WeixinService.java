@@ -4,12 +4,10 @@ import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.util.Arrays;
 import java.util.Map;
 
 import net.sf.json.JSONObject;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.ParseException;
 import org.slf4j.Logger;
@@ -144,17 +142,8 @@ public class WeixinService {
 	public String signature(String noncestr, String jsapi_ticket, String timestamp, String url) {
 		String[] arr = new String[] { "noncestr=" + noncestr, "jsapi_ticket=" + jsapi_ticket,
 				"timestamp=" + timestamp, "url=" + url };
-		// 排序
-		Arrays.sort(arr);
-		// 生成字符串
-		StringBuffer content = new StringBuffer();
-		for (int i = 0; i < arr.length; i++) {
-			content.append(arr[i]).append('&');
-		}
-		String temp = content.substring(0, content.length() - 1);
-		// sha1加密
-		String signature = DigestUtils.sha1Hex(temp);
-		logger.info("待签名字符串：{},签名：{}", temp, signature);
+		String signature = WeixinUtil.signature("&", arr);
+		logger.info("待签名字符串：{},签名：{}",arr, signature);
 		return signature;
 	}
 
