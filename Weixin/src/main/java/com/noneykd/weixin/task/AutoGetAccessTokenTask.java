@@ -43,8 +43,8 @@ public class AutoGetAccessTokenTask {
 				Set<String> domains = wexinRedisService.getDomains();
 				logger.debug("开始获取微信票据、卡券api_ticket、jsapi_ticket。");
 				for (String domain : domains) {
-					token = WeixinUtil.getAccessToken("wx722baeed0b329f2a",
-							"689b84fe6646abd48cd952b10a62f044");
+					token = WeixinUtil.getAccessToken(wexinRedisService.getAppid(domain),
+							wexinRedisService.getSecret(domain));
 					if (token != null) {
 						wexinRedisService.setToken(token.getToken(), domain);
 						logger.info("获取到的微信票据:{}", token.getToken());
