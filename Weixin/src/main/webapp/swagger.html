@@ -23,14 +23,11 @@
 
   <script type="text/javascript">
     $(function () {
-      var url = window.location.search.match(/url=([^&]+)/);
-      if (url && url.length > 1) {
-        url = decodeURIComponent(url[1]);
-      } else {
-        url = "http://noneykd.6655.la/Weixin/rest/";
-      }
+      var url = window.location.href;
+      url = url.replace("swagger.html", "rest/");
+      var docurl = url+"api-docs";
       window.swaggerUi = new SwaggerUi({
-        url: "http://noneykd.6655.la/Weixin/rest/api-docs",
+        url: docurl,
         dom_id: "swagger-ui-container",
         supportedSubmitMethods: ['get', 'post', 'put', 'delete', 'patch'],
         onComplete: function(swaggerApi, swaggerUi){
