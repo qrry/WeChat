@@ -34,6 +34,14 @@ public class WeixinService {
 	private WexinRedisService wexinRedisService;
 
 	/**
+	 * @see com.noneykd.weixin.persist.redis.service.WexinRedisService.isInDomain(String)
+	 * @param domain
+	 * @return
+	 */
+	public boolean isInDomain(String domain){
+		return wexinRedisService.isInDomain(domain);
+	}
+	/**
 	 * 获取用户信息
 	 * 
 	 * @param openid
@@ -43,22 +51,23 @@ public class WeixinService {
 	 * @throws IOException
 	 * @throws IllegalAccessError
 	 */
-	public UserInfo getUserInfo(String openid) throws IllegalArgumentException, ParseException, IOException,
-			IllegalAccessError {
+	public UserInfo getUserInfo(String openid, String domain) throws IllegalArgumentException,
+			ParseException, IOException, IllegalAccessError {
 		if (StringUtils.isBlank(openid)) {
 			throw new IllegalArgumentException("openid不能为空");
 		}
-		UserInfo user = wexinRedisService.getUserInfo(openid);
+		UserInfo user = wexinRedisService.getUserInfo(domain, openid);
 		if (user != null) {
 			return user;
 		} else {
-			JSONObject jsonObject = WeixinUtil.getUserInfo(wexinRedisService.getToken(), openid);
+			JSONObject jsonObject = WeixinUtil.getUserInfo(wexinRedisService.getToken(domain),
+					openid);
 			if (jsonObject != null) {
 				user = (UserInfo) JSONObject.toBean(jsonObject, UserInfo.class);
 			}
 			if (user != null) {
 				logger.debug("记录该用户信息：{}", openid);
-				wexinRedisService.setUserInfo(openid, user);
+				wexinRedisService.setUserInfo(domain, openid, user);
 				return user;
 			} else {
 				throw new IllegalAccessError("没有该openid：" + openid + "信息");
@@ -71,16 +80,17 @@ public class WeixinService {
 	 * 
 	 * @return
 	 */
-	public String getToken() {
-		String token = wexinRedisService.getToken();
+	public String getToken(String domain) {
+		String token = wexinRedisService.getToken(domain);
 		if (StringUtils.isBlank(token)) {
 			AccessToken accessToken;
 			try {
 				logger.debug("开始获取微信票据。");
-				accessToken = WeixinUtil.getAccessToken();
+				accessToken = WeixinUtil.getAccessToken(wexinRedisService.getAppid(domain),
+						wexinRedisService.getSecret(domain));
 				if (accessToken != null) {
 					token = accessToken.getToken();
-					wexinRedisService.setToken(token);
+					wexinRedisService.setToken(token, domain);
 					logger.info("获取到的票据:{}", accessToken.getToken());
 				}
 				logger.debug("获取微信票据结束。");
@@ -99,17 +109,17 @@ public class WeixinService {
 	 * @param type
 	 * @return
 	 */
-	public String getJsApiTicket(String type) {
-		String ticket = wexinRedisService.getJsApiTicket(type);
+	public String getJsApiTicket(String type, String domain) {
+		String ticket = wexinRedisService.getJsApiTicket(domain, type);
 		if (StringUtils.isBlank(ticket)) {
 			ApiTicket apiTicket = null;
 			try {
 				logger.debug("开始获取ticket。");
-				String token = getToken();
+				String token = getToken(domain);
 				apiTicket = WeixinUtil.getJsapiTicket(token, type);
 				if (apiTicket != null) {
 					ticket = apiTicket.getTicket();
-					wexinRedisService.setJsApiTicket(ticket, type);
+					wexinRedisService.setJsApiTicket(domain, ticket, type);
 					logger.info("获取到的ticket:{}", apiTicket.getTicket());
 				}
 				logger.debug("获取ticket结束。");
@@ -132,8 +142,8 @@ public class WeixinService {
 	 * @return
 	 */
 	public String signature(String noncestr, String jsapi_ticket, String timestamp, String url) {
-		String[] arr = new String[] { "noncestr=" + noncestr, "jsapi_ticket=" + jsapi_ticket, "timestamp=" + timestamp,
-				"url=" + url };
+		String[] arr = new String[] { "noncestr=" + noncestr, "jsapi_ticket=" + jsapi_ticket,
+				"timestamp=" + timestamp, "url=" + url };
 		// 排序
 		Arrays.sort(arr);
 		// 生成字符串
@@ -148,21 +158,22 @@ public class WeixinService {
 		return signature;
 	}
 
-	public int setMenu() throws ParseException, IOException {
+	public int setMenu(String domain) throws ParseException, IOException {
 		Menu menu = WeixinUtil.initMenu();
 		String menuStr = JSONObject.fromObject(menu).toString();
-		return WeixinUtil.createMenu(wexinRedisService.getToken(), menuStr);
+		return WeixinUtil.createMenu(wexinRedisService.getToken(domain), menuStr);
 	}
 
-	public String upload(String imgurl) throws KeyManagementException, NoSuchAlgorithmException,
-			NoSuchProviderException, IOException {
+	public String upload(String imgurl, String domain) throws KeyManagementException,
+			NoSuchAlgorithmException, NoSuchProviderException, IOException {
 		// String path = "D:/imooc.jpg";
-		String mediaId = WeixinUtil.upload(imgurl, wexinRedisService.getToken(), "thumb");
+		String mediaId = WeixinUtil.upload(imgurl, wexinRedisService.getToken(domain), "thumb");
 		return mediaId;
 	}
 
 	/**
 	 * 自动回复
+	 * 
 	 * @param map
 	 * @return
 	 */
@@ -184,10 +195,12 @@ public class WeixinService {
 			} else if (content.startsWith("翻译")) {
 				String word = content.replaceAll("^翻译", "").trim();
 				if ("".equals(word)) {
-					message = MessageUtil.initText(toUserName, fromUserName, MessageUtil.threeMenu());
+					message = MessageUtil.initText(toUserName, fromUserName,
+							MessageUtil.threeMenu());
 				} else {
 					try {
-						message = MessageUtil.initText(toUserName, fromUserName, MessageUtil.translate(word));
+						message = MessageUtil.initText(toUserName, fromUserName,
+								MessageUtil.translate(word));
 					} catch (ParseException e) {
 						logger.error(e.getMessage());
 					} catch (IOException e) {

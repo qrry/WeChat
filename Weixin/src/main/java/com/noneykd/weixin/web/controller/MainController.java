@@ -13,6 +13,7 @@ import org.dom4j.DocumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,7 +25,9 @@ import com.noneykd.weixin.util.MessageUtil;
 @RequestMapping("/wx")
 public class MainController {
 
-	private static final String token = "noneykd".intern();
+	//@Value支持"${app.token}"这种方式读取配置，没搞明白，暂时用这种方式读取
+	@Value("#{app.token}")
+	private String token;
 
 	// 日志调试
 	private static Logger logger = LoggerFactory.getLogger(MainController.class);
@@ -45,7 +48,8 @@ public class MainController {
 		String timestamp = req.getParameter("timestamp");
 		String nonce = req.getParameter("nonce");
 		String echostr = req.getParameter("echostr");
-		logger.debug("开始接入验证,signature:{},timestamp:{},nonce:{},echostr:{}.", signature, timestamp, nonce, echostr);
+		logger.debug("开始接入验证,signature:{},timestamp:{},nonce:{},echostr:{}.", signature, timestamp,
+				nonce, echostr);
 		PrintWriter out = resp.getWriter();
 		if (checkSignature(signature, timestamp, nonce)) {
 			out.print(echostr);

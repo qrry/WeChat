@@ -1,6 +1,7 @@
 package com.noneykd.weixin.task;
 
 import java.io.IOException;
+import java.util.Set;
 
 import org.apache.http.ParseException;
 import org.slf4j.Logger;
@@ -23,41 +24,44 @@ import com.noneykd.weixin.util.WeixinUtil;
  */
 @Service
 public class AutoGetAccessTokenTask {
-	
+
 	private static int count = 0;
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(AutoGetAccessTokenTask.class);
+	private static final Logger logger = LoggerFactory.getLogger(AutoGetAccessTokenTask.class);
 
 	@Autowired
 	private WexinRedisService wexinRedisService;
 
 	@Scheduled(cron = "0 */30 * * * ?")
 	public void getAccessToken() {
-		if(count<3){
+		if (count < 3) {
 			count++;
-		}else{
-			count=0;
+		} else {
+			count = 0;
 			AccessToken token;
 			try {
+				Set<String> domains = wexinRedisService.getDomains();
 				logger.debug("开始获取微信票据、卡券api_ticket、jsapi_ticket。");
-				token = WeixinUtil.getAccessToken();
-				if (token != null) {
-					wexinRedisService.setToken(token.getToken());
-					logger.info("获取到的微信票据:{}", token.getToken());
-					ApiTicket kqticket = WeixinUtil.getJsapiTicket(
-							token.getToken(), Constants.KQ_TYPE);
-					if (kqticket != null) {
-						wexinRedisService.setJsApiTicket(kqticket.getTicket(),
+				for (String domain : domains) {
+					token = WeixinUtil.getAccessToken("wx722baeed0b329f2a",
+							"689b84fe6646abd48cd952b10a62f044");
+					if (token != null) {
+						wexinRedisService.setToken(token.getToken(), domain);
+						logger.info("获取到的微信票据:{}", token.getToken());
+						ApiTicket kqticket = WeixinUtil.getJsapiTicket(token.getToken(),
 								Constants.KQ_TYPE);
-						logger.info("获取到的卡券jsapi_ticket:{}", token.getToken());
-					}
-					ApiTicket jsticket = WeixinUtil.getJsapiTicket(
-							token.getToken(), Constants.JS_TYPE);
-					if (jsticket != null) {
-						wexinRedisService.setJsApiTicket(jsticket.getTicket(),
+						if (kqticket != null) {
+							wexinRedisService.setJsApiTicket(domain, kqticket.getTicket(),
+									Constants.KQ_TYPE);
+							logger.info("获取到的卡券jsapi_ticket:{}", token.getToken());
+						}
+						ApiTicket jsticket = WeixinUtil.getJsapiTicket(token.getToken(),
 								Constants.JS_TYPE);
-						logger.info("获取到的jsapi_ticket:{}", token.getToken());
+						if (jsticket != null) {
+							wexinRedisService.setJsApiTicket(domain, jsticket.getTicket(),
+									Constants.JS_TYPE);
+							logger.info("获取到的jsapi_ticket:{}", token.getToken());
+						}
 					}
 				}
 				logger.debug("获取微信票据、卡券api_ticket、jsapi_ticket结束。");

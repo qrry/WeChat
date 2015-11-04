@@ -18,7 +18,6 @@ import net.sf.json.JSONObject;
 
 import org.apache.http.ParseException;
 
-
 import com.noneykd.weixin.menu.Button;
 import com.noneykd.weixin.menu.ClickButton;
 import com.noneykd.weixin.menu.Menu;
@@ -38,28 +37,6 @@ import com.squareup.okhttp.Response;
  */
 public class WeixinUtil {
 
-	// /**
-	// * get请求
-	// *
-	// * @param url
-	// * @return
-	// * @throws ParseException
-	// * @throws IOException
-	// */
-	// public static JSONObject doGetStr(String url) throws ParseException,
-	// IOException {
-	// DefaultHttpClient client = new DefaultHttpClient();
-	// HttpGet httpGet = new HttpGet(url);
-	// JSONObject jsonObject = null;
-	// HttpResponse httpResponse = client.execute(httpGet);
-	// HttpEntity entity = httpResponse.getEntity();
-	// if (entity != null) {
-	// String result = EntityUtils.toString(entity, "UTF-8");
-	// jsonObject = JSONObject.fromObject(result);
-	// }
-	// return jsonObject;
-	// }
-
 	/**
 	 * get请求
 	 * 
@@ -68,8 +45,7 @@ public class WeixinUtil {
 	 * @throws ParseException
 	 * @throws IOException
 	 */
-	public static JSONObject doGetStr(String url) throws ParseException,
-			IOException {
+	public static JSONObject doGetStr(String url) throws ParseException, IOException {
 		OkHttpClient client = new OkHttpClient();
 		Request request = new Request.Builder().url(url).build();
 		Response response = client.newCall(request).execute();
@@ -81,26 +57,6 @@ public class WeixinUtil {
 		}
 	}
 
-	// /**
-	// * POST请求
-	// *
-	// * @param url
-	// * @param outStr
-	// * @return
-	// * @throws ParseException
-	// * @throws IOException
-	// */
-	// public static JSONObject doPostStr(String url, String outStr)
-	// throws ParseException, IOException {
-	// DefaultHttpClient client = new DefaultHttpClient();
-	// HttpPost httpost = new HttpPost(url);
-	// JSONObject jsonObject = null;
-	// httpost.setEntity(new StringEntity(outStr, "UTF-8"));
-	// HttpResponse response = client.execute(httpost);
-	// String result = EntityUtils.toString(response.getEntity(), "UTF-8");
-	// jsonObject = JSONObject.fromObject(result);
-	// return jsonObject;
-	// }
 	/**
 	 * POST请求
 	 * 
@@ -109,8 +65,7 @@ public class WeixinUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public static JSONObject doPostStr(String url, String json)
-			throws ParseException, IOException {
+	public static JSONObject doPostStr(String url, String json) throws ParseException, IOException {
 		OkHttpClient client = new OkHttpClient();
 		RequestBody body = RequestBody.create(Constants.JSON, json);
 		Request request = new Request.Builder().url(url).post(body).build();
@@ -136,8 +91,8 @@ public class WeixinUtil {
 	 * @throws KeyManagementException
 	 */
 	public static String upload(String filePath, String accessToken, String type)
-			throws IOException, NoSuchAlgorithmException,
-			NoSuchProviderException, KeyManagementException {
+			throws IOException, NoSuchAlgorithmException, NoSuchProviderException,
+			KeyManagementException {
 		File file = new File(filePath);
 		if (!file.exists() || !file.isFile()) {
 			throw new IOException("文件不存在");
@@ -161,15 +116,14 @@ public class WeixinUtil {
 
 		// 设置边界
 		String BOUNDARY = "----------" + System.currentTimeMillis();
-		con.setRequestProperty("Content-Type", "multipart/form-data; boundary="
-				+ BOUNDARY);
+		con.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + BOUNDARY);
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("--");
 		sb.append(BOUNDARY);
 		sb.append("\r\n");
-		sb.append("Content-Disposition: form-data;name=\"file\";filename=\""
-				+ file.getName() + "\"\r\n");
+		sb.append("Content-Disposition: form-data;name=\"file\";filename=\"" + file.getName()
+				+ "\"\r\n");
 		sb.append("Content-Type:application/octet-stream\r\n\r\n");
 
 		byte[] head = sb.toString().getBytes("utf-8");
@@ -202,8 +156,7 @@ public class WeixinUtil {
 		String result = null;
 		try {
 			// 定义BufferedReader输入流来读取URL的响应
-			reader = new BufferedReader(new InputStreamReader(
-					con.getInputStream()));
+			reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
 			String line = null;
 			while ((line = reader.readLine()) != null) {
 				buffer.append(line);
@@ -236,11 +189,11 @@ public class WeixinUtil {
 	 * @throws ParseException
 	 * @throws IOException
 	 */
-	public static AccessToken getAccessToken() throws ParseException,
+	public static AccessToken getAccessToken(String appid, String appsecret) throws ParseException,
 			IOException {
 		AccessToken token = new AccessToken();
-		String url = Constants.ACCESS_TOKEN_URL.replace("APPID",
-				Constants.APPID).replace("APPSECRET", Constants.APPSECRET);
+		String url = Constants.ACCESS_TOKEN_URL.replace("APPID", appid).replace("APPSECRET",
+				appsecret);
 		JSONObject jsonObject = doGetStr(url);
 		if (jsonObject != null) {
 			token.setToken(jsonObject.getString("access_token"));
@@ -257,11 +210,10 @@ public class WeixinUtil {
 	 * @throws ParseException
 	 * @throws IOException
 	 */
-	public static JSONObject getUserAccessToken(String code)
+	public static JSONObject getUserAccessToken(String appid, String appsecret, String code)
 			throws ParseException, IOException {
-		String url = Constants.AUTHORIZE_TOKEN_URL
-				.replace("APPID", Constants.APPID)
-				.replace("SECRET", Constants.APPSECRET).replace("CODE", code);
+		String url = Constants.AUTHORIZE_TOKEN_URL.replace("APPID", appid)
+				.replace("SECRET", appsecret).replace("CODE", code);
 		return doGetStr(url);
 	}
 
@@ -274,8 +226,8 @@ public class WeixinUtil {
 	 * @throws ParseException
 	 * @throws IOException
 	 */
-	public static JSONObject getUserInfo(String token, String openid)
-			throws ParseException, IOException {
+	public static JSONObject getUserInfo(String token, String openid) throws ParseException,
+			IOException {
 		String url = Constants.USER_INFO_URL.replace("ACCESS_TOKEN", token)
 				.replace("OPENID", openid).replace("zh_CN", Constants.LANG);
 		return doGetStr(url);
@@ -289,7 +241,7 @@ public class WeixinUtil {
 	 * @throws ParseException
 	 * @throws IOException
 	 */
-	public static ApiTicket getJsapiTicket(String token,String type) throws ParseException,
+	public static ApiTicket getJsapiTicket(String token, String type) throws ParseException,
 			IOException {
 		ApiTicket apiTicket = new ApiTicket();
 		String url = Constants.JSAPI_TICKET_URL.replace("ACCESS_TOKEN", token)
@@ -297,8 +249,7 @@ public class WeixinUtil {
 		JSONObject jsonObject = doGetStr(url);
 		doGetStr(url);
 		if (!jsonObject.isEmpty() && jsonObject.getInt("errcode") == 0) {
-			apiTicket = (ApiTicket) JSONObject.toBean(jsonObject,
-					ApiTicket.class);
+			apiTicket = (ApiTicket) JSONObject.toBean(jsonObject, ApiTicket.class);
 		}
 		return apiTicket;
 	}
@@ -338,8 +289,7 @@ public class WeixinUtil {
 		return menu;
 	}
 
-	public static int createMenu(String token, String menu)
-			throws ParseException, IOException {
+	public static int createMenu(String token, String menu) throws ParseException, IOException {
 		int result = 0;
 		String url = Constants.CREATE_MENU_URL.replace("ACCESS_TOKEN", token);
 		JSONObject jsonObject = doPostStr(url, menu);
@@ -349,15 +299,13 @@ public class WeixinUtil {
 		return result;
 	}
 
-	public static JSONObject queryMenu(String token) throws ParseException,
-			IOException {
+	public static JSONObject queryMenu(String token) throws ParseException, IOException {
 		String url = Constants.QUERY_MENU_URL.replace("ACCESS_TOKEN", token);
 		JSONObject jsonObject = doGetStr(url);
 		return jsonObject;
 	}
 
-	public static int deleteMenu(String token) throws ParseException,
-			IOException {
+	public static int deleteMenu(String token) throws ParseException, IOException {
 		String url = Constants.DELETE_MENU_URL.replace("ACCESS_TOKEN", token);
 		JSONObject jsonObject = doGetStr(url);
 		int result = 0;

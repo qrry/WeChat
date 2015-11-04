@@ -50,7 +50,11 @@ public class MainResource {
 			@ApiResponse(code = 200, message = "接口调用成功", response = ErrorResponse.class) })
 	public Response token(@Context HttpServletRequest req) {
 		try {
-			String token = weixinService.getToken();
+			String domain = req.getServerName();
+			if (!weixinService.isInDomain(domain)) {
+				domain = Constants.DEFAULT;
+			}
+			String token = weixinService.getToken(domain);
 			JSONObject json = new JSONObject();
 			json.put("token", token);
 			return Response.status(Response.Status.OK).entity(json)
@@ -61,9 +65,8 @@ public class MainResource {
 			throw new WebApplicationException(Response
 					.status(Response.Status.INTERNAL_SERVER_ERROR)
 					.entity(new ErrorResponse("服务器内部错误", e.getMessage(),
-							Response.Status.INTERNAL_SERVER_ERROR
-									.getStatusCode(), StringUtils.EMPTY))
-					.type(MediaType.APPLICATION_JSON_TYPE).build());
+							Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+							StringUtils.EMPTY)).type(MediaType.APPLICATION_JSON_TYPE).build());
 		}
 
 	}
@@ -76,18 +79,20 @@ public class MainResource {
 			@ApiResponse(code = 400, message = "参数错误", response = ErrorResponse.class),
 			@ApiResponse(code = 500, message = "服务器内部错误", response = ErrorResponse.class),
 			@ApiResponse(code = 200, message = "接口调用成功", response = ErrorResponse.class) })
-	public Response user(@QueryParam("openid") String openid,
-			@Context HttpServletRequest req) {
+	public Response user(@QueryParam("openid") String openid, @Context HttpServletRequest req) {
 		if (StringUtils.isBlank(openid)) {
 			throw new WebApplicationException(Response
 					.status(Response.Status.BAD_REQUEST)
-					.entity(new ErrorResponse("提交的openid为空",
-							"openid id is null", Response.Status.BAD_REQUEST
-									.getStatusCode(), StringUtils.EMPTY))
+					.entity(new ErrorResponse("提交的openid为空", "openid id is null",
+							Response.Status.BAD_REQUEST.getStatusCode(), StringUtils.EMPTY))
 					.type(MediaType.APPLICATION_JSON_TYPE).build());
 		}
 		try {
-			UserInfo user = weixinService.getUserInfo(openid);
+			String domain = req.getServerName();
+			if (!weixinService.isInDomain(domain)) {
+				domain = Constants.DEFAULT;
+			}
+			UserInfo user = weixinService.getUserInfo(openid, domain);
 			return Response.status(Response.Status.OK).entity(user)
 					.type(MediaType.APPLICATION_JSON_TYPE).build();
 
@@ -96,9 +101,8 @@ public class MainResource {
 			throw new WebApplicationException(Response
 					.status(Response.Status.INTERNAL_SERVER_ERROR)
 					.entity(new ErrorResponse("服务器内部错误", e.getMessage(),
-							Response.Status.INTERNAL_SERVER_ERROR
-									.getStatusCode(), StringUtils.EMPTY))
-					.type(MediaType.APPLICATION_JSON_TYPE).build());
+							Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+							StringUtils.EMPTY)).type(MediaType.APPLICATION_JSON_TYPE).build());
 		}
 
 	}
@@ -110,14 +114,17 @@ public class MainResource {
 	@ApiResponses(value = {
 			@ApiResponse(code = 500, message = "服务器内部错误", response = ErrorResponse.class),
 			@ApiResponse(code = 200, message = "接口调用成功", response = ErrorResponse.class) })
-	public Response ticket(@QueryParam("type") String type,
-			@Context HttpServletRequest req) {
+	public Response ticket(@QueryParam("type") String type, @Context HttpServletRequest req) {
 		String TYPE = type;
 		if (StringUtils.isBlank(TYPE)) {
 			TYPE = Constants.JS_TYPE;
 		}
 		try {
-			String ticket = weixinService.getJsApiTicket(TYPE);
+			String domain = req.getServerName();
+			if (!weixinService.isInDomain(domain)) {
+				domain = Constants.DEFAULT;
+			}
+			String ticket = weixinService.getJsApiTicket(TYPE, domain);
 			JSONObject json = new JSONObject();
 			json.put("ticket", ticket);
 			return Response.status(Response.Status.OK).entity(json)
@@ -128,9 +135,8 @@ public class MainResource {
 			throw new WebApplicationException(Response
 					.status(Response.Status.INTERNAL_SERVER_ERROR)
 					.entity(new ErrorResponse("服务器内部错误", e.getMessage(),
-							Response.Status.INTERNAL_SERVER_ERROR
-									.getStatusCode(), StringUtils.EMPTY))
-					.type(MediaType.APPLICATION_JSON_TYPE).build());
+							Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+							StringUtils.EMPTY)).type(MediaType.APPLICATION_JSON_TYPE).build());
 		}
 
 	}
@@ -145,41 +151,34 @@ public class MainResource {
 			@ApiResponse(code = 200, message = "接口调用成功", response = ErrorResponse.class) })
 	public Response signature(@QueryParam("noncestr") String noncestr,
 			@QueryParam("jsapi_ticket") String jsapi_ticket,
-			@QueryParam("timestamp") String timestamp,
-			@QueryParam("url") String url,
-			@ApiParam("可选")@QueryParam("callback") String callback,
-			@Context HttpServletRequest req) {
+			@QueryParam("timestamp") String timestamp, @QueryParam("url") String url,
+			@ApiParam("可选") @QueryParam("callback") String callback, @Context HttpServletRequest req) {
 		if (StringUtils.isBlank(noncestr)) {
 			throw new WebApplicationException(Response
 					.status(Response.Status.BAD_REQUEST)
-					.entity(new ErrorResponse("提交的noncestr为空",
-							"noncestr id is null", Response.Status.BAD_REQUEST
-									.getStatusCode(), StringUtils.EMPTY))
+					.entity(new ErrorResponse("提交的noncestr为空", "noncestr id is null",
+							Response.Status.BAD_REQUEST.getStatusCode(), StringUtils.EMPTY))
 					.type(MediaType.APPLICATION_JSON_TYPE).build());
 		}
 		if (StringUtils.isBlank(jsapi_ticket)) {
 			throw new WebApplicationException(Response
 					.status(Response.Status.BAD_REQUEST)
-					.entity(new ErrorResponse("提交的jsapi_ticket为空",
-							"jsapi_ticket id is null",
-							Response.Status.BAD_REQUEST.getStatusCode(),
-							StringUtils.EMPTY))
+					.entity(new ErrorResponse("提交的jsapi_ticket为空", "jsapi_ticket id is null",
+							Response.Status.BAD_REQUEST.getStatusCode(), StringUtils.EMPTY))
 					.type(MediaType.APPLICATION_JSON_TYPE).build());
 		}
 		if (StringUtils.isBlank(timestamp)) {
 			throw new WebApplicationException(Response
 					.status(Response.Status.BAD_REQUEST)
-					.entity(new ErrorResponse("提交的timestamp为空",
-							"timestamp id is null", Response.Status.BAD_REQUEST
-									.getStatusCode(), StringUtils.EMPTY))
+					.entity(new ErrorResponse("提交的timestamp为空", "timestamp id is null",
+							Response.Status.BAD_REQUEST.getStatusCode(), StringUtils.EMPTY))
 					.type(MediaType.APPLICATION_JSON_TYPE).build());
 		}
 		if (StringUtils.isBlank(url)) {
 			throw new WebApplicationException(Response
 					.status(Response.Status.BAD_REQUEST)
 					.entity(new ErrorResponse("提交的url为空", "url id is null",
-							Response.Status.BAD_REQUEST.getStatusCode(),
-							StringUtils.EMPTY))
+							Response.Status.BAD_REQUEST.getStatusCode(), StringUtils.EMPTY))
 					.type(MediaType.APPLICATION_JSON_TYPE).build());
 		}
 		String _callback = callback;
@@ -187,16 +186,14 @@ public class MainResource {
 			_callback = "callback";
 		}
 		try {
-			String signature = weixinService.signature(noncestr, jsapi_ticket,
-					timestamp, url);
+			String signature = weixinService.signature(noncestr, jsapi_ticket, timestamp, url);
 			JSONObject json = new JSONObject();
 			json.put("signature", signature);
 			json.put("noncestr", noncestr);
 			json.put("jsapi_ticket", jsapi_ticket);
 			json.put("timestamp", timestamp);
 			json.put("url", url);
-			return Response.status(Response.Status.OK)
-					.entity(_callback + "(" + json + ")")
+			return Response.status(Response.Status.OK).entity(_callback + "(" + json + ")")
 					.type(MediaType.APPLICATION_JSON_TYPE).build();
 
 		} catch (Exception e) {
@@ -204,9 +201,8 @@ public class MainResource {
 			throw new WebApplicationException(Response
 					.status(Response.Status.INTERNAL_SERVER_ERROR)
 					.entity(new ErrorResponse("服务器内部错误", e.getMessage(),
-							Response.Status.INTERNAL_SERVER_ERROR
-									.getStatusCode(), StringUtils.EMPTY))
-					.type(MediaType.APPLICATION_JSON_TYPE).build());
+							Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+							StringUtils.EMPTY)).type(MediaType.APPLICATION_JSON_TYPE).build());
 		}
 
 	}

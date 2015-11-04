@@ -3,11 +3,8 @@ package com.noneykd.weixin.util;
 import com.squareup.okhttp.MediaType;
 
 public class Constants {
-
-	//微信appid
-	public static final String APPID = "wx722baeed0b329f2a".intern();
-	//微信appsecret
-	public static final String APPSECRET = "689b84fe6646abd48cd952b10a62f044".intern();
+	
+	public static final String DEFAULT = "default".intern();
 	//语言设置
 	public static final String LANG = "zh_CN".intern();
 	//简单授权方式
