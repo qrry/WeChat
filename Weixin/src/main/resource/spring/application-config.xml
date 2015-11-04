@@ -5,7 +5,12 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd 
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+	<context:annotation-config/>
 	<context:component-scan base-package="com.noneykd.weixin" />
 	<!-- 导入属性配置文件 -->  
     <context:property-placeholder location="classpath*:/config/*.properties" /> 
+    
+    <util:map id="app" map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.String">
+	    <entry key="token" value="${app.token}" />
+	</util:map>
 </beans>
